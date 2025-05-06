@@ -6,75 +6,130 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>804</width>
+    <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>330</x>
-      <y>190</y>
-      <width>160</width>
-      <height>94</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLineEdit" name="nameLineEdit">
-       <property name="text">
-        <string/>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="pageIntro"/>
+      <widget class="QWidget" name="pageKlienci">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(0, 255, 0);</string>
        </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout"/>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="4" column="0">
+           <widget class="QPushButton" name="btnEdytujKlienta">
+            <property name="text">
+             <string>Edytuj klienta</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QPushButton" name="btnUsunKlienta">
+            <property name="text">
+             <string>Usun Klienta</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QPushButton" name="btnDodajKlienta">
+            <property name="text">
+             <string>Dodaj Klient</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QListWidget" name="listWidgetKlienci"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QPushButton" name="pushButton_4">
+            <property name="text">
+             <string>Wyszukaj klienta</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="surnameLineEdit"/>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QPushButton" name="addClientButton">
-    <property name="geometry">
-     <rect>
-      <x>360</x>
-      <y>310</y>
-      <width>93</width>
-      <height>29</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
+      <widget class="QWidget" name="pagePojazdy"/>
+      <widget class="QWidget" name="pageSprzedaz"/>
+      <widget class="QWidget" name="pageRaporty"/>
+      <widget class="QWidget" name="pageSerwis"/>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>804</width>
      <height>26</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>Menu</string>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>false</bool>
+    </property>
+    <addaction name="actionIntro"/>
+    <addaction name="actionKlienci"/>
+    <addaction name="actionPojazdy"/>
+    <addaction name="actionSprzedaz"/>
+    <addaction name="actionSerwis"/>
+    <addaction name="actionRaporty"/>
+   </widget>
+   <addaction name="menu"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QToolBar" name="toolBar">
-   <property name="windowTitle">
-    <string>toolBar</string>
+  <action name="actionKlienci">
+   <property name="text">
+    <string>Klienci</string>
    </property>
-   <property name="styleSheet">
-    <string notr="true">background-color: rgb(0, 255, 127);</string>
+  </action>
+  <action name="actionPojazdy">
+   <property name="text">
+    <string>Pojazdy</string>
    </property>
-   <attribute name="toolBarArea">
-    <enum>BottomToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
+  </action>
+  <action name="actionSprzedaz">
+   <property name="text">
+    <string>Sprzedaz</string>
+   </property>
+  </action>
+  <action name="actionSerwis">
+   <property name="text">
+    <string>Serwis</string>
+   </property>
+  </action>
+  <action name="actionRaporty">
+   <property name="text">
+    <string>Raporty</string>
+   </property>
+  </action>
+  <action name="actionIntro">
+   <property name="text">
+    <string>Intro</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

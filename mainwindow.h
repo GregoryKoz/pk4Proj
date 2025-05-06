@@ -1,6 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
+#include <QAction>
 #include <QMainWindow>
 #include <vector>
 #include "klient.h"
@@ -17,7 +17,9 @@ public:
     ~MainWindow();
 
 private slots:
-    void onAddClientClicked();
+
+    void on_stackedWidget_currentChanged(int arg1);
+    void on_btnDodajKlienta_clicked();
 
 private:
     Ui::MainWindow *ui;

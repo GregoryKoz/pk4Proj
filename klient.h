@@ -8,7 +8,7 @@ public:
     Client(const QString& name, const QString& surname);
 
     Client(const QString& name, const QString& surname, const QString& id);
-
+    Client() = default;
 
     QString getName() const;
     QString getSurname() const;
@@ -22,7 +22,7 @@ private:
     QString name;
     QString surname;
     QString id;
-    static int ostatnieId; // unikalny licznik ID
+    static int ostatnieId;
 };
 
 #endif // CLIENT_H

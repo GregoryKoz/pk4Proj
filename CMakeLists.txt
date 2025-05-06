@@ -19,6 +19,12 @@ qt_add_executable(Salon-projekt
     klient.cpp
     Salon.h
     Salon.cpp
+    pojazd.h
+    pojazd.cpp
+    osobowy.h osobowy.cpp
+    motocykl.h motocykl.cpp
+    ciezarowy.h ciezarowy.cpp
+    dodajklientadialog.h dodajklientadialog.cpp dodajklientadialog.ui
 )
 
 target_link_libraries(Salon-projekt
