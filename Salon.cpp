@@ -4,11 +4,16 @@
 #include <QDebug>
 #include <filesystem>
 
+
+Salon::Salon(QObject *parent)
+    : QObject(parent){}
+
 void Salon::dodajKlienta(const Client &klient){
     klienci.push_back(klient);
+    emit klienciWczytani();
 }
 
-const std::vector<Client>& Salon::getKlienci() const{
+std::vector<Client>& Salon::getKlienci() {
     return klienci;
 }
 
@@ -51,5 +56,21 @@ void Salon::wczytajKlientow(const std::string& sciezkaPliku) {
         }
     }
     qDebug() << "Liczba klientów:" << klienci.size();
+    emit klienciWczytani();
+    qDebug() << "Sygnal:";
 }
 
+bool Salon::usunKlientaPoId(int id)
+{
+    auto it = std::find_if(klienci.begin(), klienci.end(),
+                           [id](const Client& c) {
+                               return c.getId() == QString::number(id);
+                           });
+
+    if (it != klienci.end()) {
+        klienci.erase(it);
+        return true;
+    }
+
+    return false;
+}

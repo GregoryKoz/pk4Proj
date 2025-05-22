@@ -31,12 +31,12 @@ void DodajKlientaDialog::onButtonOkClicked()
 
     if (name.isEmpty() || surname.isEmpty()) {
         QMessageBox::warning(this, "Blad", "Uzupelnij wszystkie pola!");
-        return;  // dialog zostaje otwarty
+        return;
     }
 
     wynikowyKlient = Client(name, surname);
     danePoprawne = true;
-    accept();  // zamknij dialog dopiero teraz
+    accept();
 }
 
 

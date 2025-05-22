@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>IMG_3321.JPEG</file>
+        <file>tło seat.PNG</file>
+        <file>Seatwiki.jpg</file>
+    </qresource>
+</RCC>

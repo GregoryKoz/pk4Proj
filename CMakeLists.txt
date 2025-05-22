@@ -25,6 +25,7 @@ qt_add_executable(Salon-projekt
     motocykl.h motocykl.cpp
     ciezarowy.h ciezarowy.cpp
     dodajklientadialog.h dodajklientadialog.cpp dodajklientadialog.ui
+    resources.qrc
 )
 
 target_link_libraries(Salon-projekt

@@ -11,19 +11,64 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SalonSamochodowy</string>
+  </property>
+  <property name="windowIcon">
+   <iconset theme="QIcon::ThemeIcon::ContactNew"/>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="pageIntro"/>
+      <widget class="QWidget" name="pageIntro">
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>20</y>
+          <width>381</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:16pt; font-weight:700;&quot;&gt;Salon samochodowy system&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>60</y>
+          <width>181</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Wybierz jedną z opcji:</string>
+        </property>
+       </widget>
+      </widget>
       <widget class="QWidget" name="pageKlienci">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(0, 255, 0);</string>
+        <string notr="true"/>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
@@ -31,32 +76,35 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="4" column="0">
-           <widget class="QPushButton" name="btnEdytujKlienta">
-            <property name="text">
-             <string>Edytuj klienta</string>
-            </property>
-           </widget>
+          <item row="0" column="0">
+           <widget class="QListWidget" name="listWidgetKlienci"/>
           </item>
-          <item row="2" column="0">
-           <widget class="QPushButton" name="btnUsunKlienta">
-            <property name="text">
-             <string>Usun Klienta</string>
-            </property>
-           </widget>
+          <item row="0" column="1">
+           <widget class="QTableWidget" name="tableWidgetKlienci"/>
           </item>
-          <item row="1" column="0">
+          <item row="1" column="0" colspan="2">
            <widget class="QPushButton" name="btnDodajKlienta">
             <property name="text">
              <string>Dodaj Klient</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="0">
-           <widget class="QListWidget" name="listWidgetKlienci"/>
+          <item row="2" column="0" colspan="2">
+           <widget class="QPushButton" name="btnUsunKlienta">
+            <property name="text">
+             <string>Usun Klienta</string>
+            </property>
+           </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QPushButton" name="pushButton_4">
+          <item row="4" column="0" colspan="2">
+           <widget class="QPushButton" name="btnEdytujKlienta">
+            <property name="text">
+             <string>Edytuj klienta</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <widget class="QPushButton" name="btnWyszukaj">
             <property name="text">
              <string>Wyszukaj klienta</string>
             </property>
@@ -66,7 +114,54 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="pagePojazdy"/>
+      <widget class="QWidget" name="pagePojazdy">
+       <widget class="QWidget" name="gridLayoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>761</width>
+          <height>531</height>
+         </rect>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="1">
+          <widget class="QTableWidget" name="tableWidget"/>
+         </item>
+         <item row="0" column="0">
+          <widget class="QListWidget" name="listWidgetPojazdy"/>
+         </item>
+         <item row="1" column="0" colspan="2">
+          <widget class="QPushButton" name="btnDodajPojazd">
+           <property name="text">
+            <string>Dodaj pojazd</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QPushButton" name="btnUsunPojazd">
+           <property name="text">
+            <string>Usuń pojazd</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_3">
+           <property name="text">
+            <string>Edytuj pojazd</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0" colspan="2">
+          <widget class="QPushButton" name="pushButton_4">
+           <property name="text">
+            <string>Wyszukaj pojazd</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
       <widget class="QWidget" name="pageSprzedaz"/>
       <widget class="QWidget" name="pageRaporty"/>
       <widget class="QWidget" name="pageSerwis"/>

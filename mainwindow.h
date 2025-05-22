@@ -13,13 +13,17 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(Salon* salonPtr, QWidget *parent = nullptr);
+    MainWindow(Salon* salon, QWidget *parent = nullptr);
     ~MainWindow();
+    void odswiezListeKlientow();
 
 private slots:
 
     void on_stackedWidget_currentChanged(int arg1);
     void on_btnDodajKlienta_clicked();
+    void on_btnUsunKlienta_clicked();
+    void on_btnWyszukaj_clicked();
+    void on_btnEdytujKlienta_clicked();
 
 private:
     Ui::MainWindow *ui;

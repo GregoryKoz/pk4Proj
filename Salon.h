@@ -7,16 +7,26 @@
 #include <filesystem>
 #include <QString>
 #include <vector>
+#include <QObject>
+#include <ranges>
+#include <regex>
+#include <algorithm>
 
-class Salon{
+class Salon : public QObject
+{
+    Q_OBJECT
 public:
+    explicit Salon(QObject *parent = nullptr);
+
     void dodajKlienta(const Client& klient);
-    const std::vector<Client>& getKlienci() const;
+    std::vector<Client>& getKlienci();
     void zapiszKlientow(const std::string& sciezkaPliku) const;
     void wczytajKlientow(const std::string& sciezkaPliku);
+    bool usunKlientaPoId(int id);
 private:
     std::vector<Client> klienci;
-
+signals:
+    void klienciWczytani();
 };
 
 #endif // SALON_H
