@@ -36,8 +36,8 @@
        <widget class="QLabel" name="label">
         <property name="geometry">
          <rect>
-          <x>220</x>
-          <y>20</y>
+          <x>190</x>
+          <y>30</y>
           <width>381</width>
           <height>51</height>
          </rect>
@@ -63,6 +63,71 @@
         </property>
         <property name="text">
          <string>Wybierz jedną z opcji:</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnStronaKlient">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>190</y>
+          <width>141</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Klient</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnStronaPojazd">
+        <property name="geometry">
+         <rect>
+          <x>290</x>
+          <y>190</y>
+          <width>141</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Pojazd</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnStronaRaport">
+        <property name="geometry">
+         <rect>
+          <x>500</x>
+          <y>190</y>
+          <width>141</width>
+          <height>91</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Raport</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnStronaSprzedaz">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>320</y>
+          <width>141</width>
+          <height>111</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Sprzedaz</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnStronaSerwis">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>320</y>
+          <width>131</width>
+          <height>111</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Serwis</string>
         </property>
        </widget>
       </widget>

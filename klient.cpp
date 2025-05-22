@@ -27,6 +27,12 @@ QString Client::getSurname() const {
 QString Client::getId() const {
     return id;
 }
+QString Client::getEmail() const{
+    return email;
+}
+QString Client::getTel() const{
+    return tel;
+}
 
 void Client::setName(const QString& newName) {
     name = newName;
@@ -38,4 +44,10 @@ void Client::setSurname(const QString& newSurname) {
 
 void Client::setId(const QString& newId) {
     id = newId;
+}
+void Client::setTel(const QString &newTel){
+    tel= newTel;
+}
+void Client::setEmail(const QString &newEmail){
+    email=newEmail;
 }

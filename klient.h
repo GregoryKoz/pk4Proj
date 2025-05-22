@@ -13,15 +13,21 @@ public:
     QString getName() const;
     QString getSurname() const;
     QString getId() const;
+    QString getEmail() const;
+    QString getTel() const;
 
     void setName(const QString& newName);
     void setSurname(const QString& newSurname);
     void setId(const QString& newId);
+    void setEmail(const QString& newEmail);
+    void setTel(const QString& newTel);
 
 private:
     QString name;
     QString surname;
     QString id;
+    QString email;
+    QString tel;
     static int ostatnieId;
 };
 

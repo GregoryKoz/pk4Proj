@@ -54,7 +54,21 @@ void MainWindow::on_btnDodajKlienta_clicked()
         odswiezListeKlientow();
     }
 }
-
+void MainWindow::on_btnStronaKlient_clicked(){
+    ui->stackedWidget->setCurrentWidget(ui->pageKlienci);
+}
+void MainWindow::on_btnStronaPojazd_clicked(){
+    ui->stackedWidget->setCurrentWidget(ui->pagePojazdy);
+}
+void MainWindow::on_btnStronaRaport_clicked(){
+    ui->stackedWidget->setCurrentWidget(ui->pageRaporty);
+}
+void MainWindow::on_btnStronaSprzedaz_clicked(){
+    ui->stackedWidget->setCurrentWidget(ui->pageSprzedaz);
+}
+void MainWindow::on_btnStronaSerwis_clicked(){
+    ui->stackedWidget->setCurrentWidget(ui->pageSerwis);
+}
 void MainWindow::on_stackedWidget_currentChanged(int arg1)
 {
 

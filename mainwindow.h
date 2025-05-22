@@ -24,7 +24,11 @@ private slots:
     void on_btnUsunKlienta_clicked();
     void on_btnWyszukaj_clicked();
     void on_btnEdytujKlienta_clicked();
-
+    void on_btnStronaKlient_clicked();
+    void on_btnStronaPojazd_clicked();
+    void on_btnStronaRaport_clicked();
+    void on_btnStronaSprzedaz_clicked();
+    void on_btnStronaSerwis_clicked();
 private:
     Ui::MainWindow *ui;
     Salon* salon;
