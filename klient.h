@@ -5,9 +5,9 @@
 
 class Client {
 public:
-    Client(const QString& name, const QString& surname);
+    Client(const QString& name, const QString& surname, const QString& email, const QString& tel);
 
-    Client(const QString& name, const QString& surname, const QString& id);
+    Client(const QString& name, const QString& surname, const QString& id, const QString& email, const QString& tel);
     Client() = default;
 
     QString getName() const;

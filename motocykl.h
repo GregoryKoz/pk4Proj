@@ -7,11 +7,13 @@ class Motocykl : public Pojazd {
     int moc;
 
 public:
-    Motocykl(const QString& marka, const QString& model, double cena, int moc);
-
+    Motocykl(const QString& marka, const QString& model, double cena, int rok, int przebieg, int moc);
+    Motocykl();
     int getMoc() const;
     QString getTyp() const override;
-    QString opis() const override;
+    void wypisz(QTextStream &dane) override;
+    void wczytaj(const QStringList& dane) override;
+    QString getOpis() const override;
 };
 
 #endif // MOTOCYKL_H

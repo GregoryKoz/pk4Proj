@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     Salon* salon = new Salon();
 
     salon->wczytajKlientow("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/klienci.txt");
-
+    salon->wczytajPojazdy("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/pojazdy.txt");
     MainWindow w(salon);
     w.show();
 

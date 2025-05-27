@@ -5,6 +5,7 @@
 #include <vector>
 #include "klient.h"
 #include "Salon.h"
+#include <regex>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -16,6 +17,7 @@ public:
     MainWindow(Salon* salon, QWidget *parent = nullptr);
     ~MainWindow();
     void odswiezListeKlientow();
+    void odswiezListePojazdow();
 
 private slots:
 

@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include "klient.h"
+#include <regex>
 
 namespace Ui {
 class DodajKlientaDialog;

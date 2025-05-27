@@ -1,8 +1,9 @@
 #include "ciezarowy.h"
 
-Ciezarowy::Ciezarowy(const QString& marka, const QString& model, double cena, double ladownosc)
-    : Pojazd(marka, model, cena), ladownosc(ladownosc) {}
+Ciezarowy::Ciezarowy(const QString& marka, const QString& model, double cena, int rok, int przebieg, double ladownosc)
+    : Pojazd(marka, model, cena, rok, przebieg), ladownosc(ladownosc) {}
 
+Ciezarowy::Ciezarowy() : Pojazd() {}
 double Ciezarowy::getLadownosc() const {
     return ladownosc;
 }
@@ -11,9 +12,20 @@ QString Ciezarowy::getTyp() const {
     return "Ciezarowy";
 }
 
-QString Ciezarowy::opis() const {
-    return QString("%1 %2 | Typ: %3 | Ladownosc: %4 kg | Cena: %5 zl")
-    .arg(marka, model, getTyp())
-        .arg(ladownosc)
-        .arg(cena);
+void Ciezarowy::wczytaj(const QStringList& dane) {
+    if (dane.size() >= 6) {
+        marka = dane[0];
+        model = dane[1];
+        cena = dane[2].toDouble();
+        rok = dane[3].toInt();
+        przebieg = dane[4].toInt();
+        ladownosc = dane[5].toDouble();
+    }
 }
+void Ciezarowy::wypisz(QTextStream& dane){
+    dane << marka << model << cena << rok << przebieg << ladownosc;
+}
+QString Ciezarowy::getOpis() const{
+    return Pojazd::opisbazowy() + QString(", Ladowność: %1 kg").arg(ladownosc);
+}
+

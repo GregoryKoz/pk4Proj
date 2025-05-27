@@ -1,14 +1,14 @@
 #include "klient.h"
 int Client::ostatnieId = 1;
 
-Client::Client(const QString& name, const QString& surname)
-    : name(name), surname(surname)
+Client::Client(const QString& name, const QString& surname, const QString& email, const QString& tel)
+    : name(name), surname(surname), email(email), tel(tel)
 {
     id = QString::number(ostatnieId++);
 }
 
-Client::Client(const QString& name, const QString& surname, const QString& id)
-    : name(name), surname(surname), id(id)
+Client::Client(const QString& name, const QString& surname, const QString& id, const QString& email, const QString& tel)
+    : name(name), surname(surname), id(id), email(email), tel(tel)
 {
     bool ok;
     int idVal = id.toInt(&ok);
@@ -16,6 +16,7 @@ Client::Client(const QString& name, const QString& surname, const QString& id)
         ostatnieId = idVal + 1;
     }
 }
+
 QString Client::getName() const {
     return name;
 }

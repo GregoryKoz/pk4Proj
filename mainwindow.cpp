@@ -12,6 +12,7 @@ MainWindow::MainWindow(Salon* salonPtr, QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), salon(salonPtr) {
     ui->setupUi(this);
     odswiezListeKlientow();
+    odswiezListePojazdow();
     connect(ui->actionKlienci, &QAction::triggered, this, [this]() {
         ui->stackedWidget->setCurrentWidget(ui->pageKlienci);
     });
@@ -79,7 +80,7 @@ void MainWindow::odswiezListeKlientow()
 
     ui->listWidgetKlienci->clear();
     for (const Client& k : salon->getKlienci()) {
-        ui->listWidgetKlienci->addItem(k.getName() + " " + k.getSurname() + " ID: " + k.getId());
+        ui->listWidgetKlienci->addItem(k.getName() + " " + k.getSurname() + " ID: " + k.getId() + " " + k.getEmail() + " " + k.getTel());
     }
 }
 
@@ -88,7 +89,7 @@ void MainWindow::on_btnUsunKlienta_clicked()
     bool ok;
     int id = QInputDialog::getInt(this, "Usuń klienta", "Podaj ID klienta do usunięcia:", 0, 0, 999999, 1, &ok);
 
-    if (!ok) return;  // Użytkownik anulował
+    if (!ok) return;
 
     if (salon->usunKlientaPoId(id)) {
         QMessageBox::information(this, "Sukces", "Klient usunięty.");
@@ -101,8 +102,8 @@ void MainWindow::on_btnWyszukaj_clicked()
 {
     ui->tableWidgetKlienci->clearContents();
     ui->tableWidgetKlienci->setRowCount(0);
-    ui->tableWidgetKlienci->setColumnCount(3);
-    ui->tableWidgetKlienci->setHorizontalHeaderLabels({"ID", "Imię", "Nazwisko"});
+    ui->tableWidgetKlienci->setColumnCount(5);
+    ui->tableWidgetKlienci->setHorizontalHeaderLabels({"ID", "Imię", "Nazwisko","Email","Telefon"});
     bool ok;
     QString tryb = QInputDialog::getItem(this, "Wyszukiwanie", "Szukaj po:",
                                          {"ID", "Imie", "Nazwisko"}, 0, false, &ok);
@@ -131,6 +132,8 @@ void MainWindow::on_btnWyszukaj_clicked()
         ui->tableWidgetKlienci->setItem(row, 0, new QTableWidgetItem(klient.getId()));
         ui->tableWidgetKlienci->setItem(row, 1, new QTableWidgetItem(klient.getName()));
         ui->tableWidgetKlienci->setItem(row, 2, new QTableWidgetItem(klient.getSurname()));
+        ui->tableWidgetKlienci->setItem(row, 3, new QTableWidgetItem(klient.getEmail()));
+        ui->tableWidgetKlienci->setItem(row, 4, new QTableWidgetItem(klient.getTel()));
         ++row;
     }
 }
@@ -147,13 +150,36 @@ void MainWindow::on_btnEdytujKlienta_clicked() {
         QMessageBox::warning(this, "Nie znaleziono", "Nie znaleziono klienta o podanym ID.");
         return;
     }
-
+    std::regex telefonRegex("^\\d{9}$");
+    std::regex emailRegex("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
     QString noweImie = QInputDialog::getText(this, "Nowe imię", "Podaj nowe imię:", QLineEdit::Normal, it->getName());
     QString noweNazwisko = QInputDialog::getText(this, "Nowe nazwisko", "Podaj nowe nazwisko:", QLineEdit::Normal, it->getSurname());
+    QString nowyEmail = QInputDialog::getText(this, "Nowy email", "Podaj nowy email:", QLineEdit::Normal, it->getEmail());
+    if (!std::regex_match(nowyEmail.toStdString(), emailRegex)) {
+        QMessageBox::warning(this, "Błąd", "Nieprawidłowy adres email.");
+        return;
+    }
+    QString nowyTel = QInputDialog::getText(this, "Nowy numer telefonu", "Podaj nowy numer telefonu:", QLineEdit::Normal, it->getTel());
+    if (!std::regex_match(nowyTel.toStdString(), telefonRegex)) {
+        QMessageBox::warning(this, "Błąd", "Numer telefonu musi zawierać dokładnie 9 cyfr.");
+        return;
+    }
 
     it->setName(noweImie);
     it->setSurname(noweNazwisko);
+    it->setEmail(nowyEmail);
+    it->setTel(nowyTel);
     odswiezListeKlientow();
     QMessageBox::information(this, "Zaktualizowano", "Dane klienta zostały zaktualizowane.");
+}
+
+void MainWindow::odswiezListePojazdow()
+{
+    qDebug() << "Wywołano odswiezListePojazdow()";
+
+    ui->listWidgetPojazdy->clear();
+    for (const auto& pojazd : salon->getPojazdy()) {
+       ui->listWidgetPojazdy->addItem(pojazd->getTyp() + ": " + pojazd->getOpis());
+    }
 }
 

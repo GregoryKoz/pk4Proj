@@ -28,13 +28,26 @@ void DodajKlientaDialog::onButtonOkClicked()
 {
     QString name = ui->nameLineEdit->text();
     QString surname = ui->surnameLineEdit->text();
+    QString email = ui->emailLineEdit->text();
+    QString tel = ui->telLineEdit->text();
 
-    if (name.isEmpty() || surname.isEmpty()) {
+    std::regex telefonRegex("^\\d{9}$");
+    std::regex emailRegex("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+
+    if (name.isEmpty() || surname.isEmpty() || email.isEmpty() || tel.isEmpty()) {
         QMessageBox::warning(this, "Blad", "Uzupelnij wszystkie pola!");
         return;
     }
+    if (!std::regex_match(tel.toStdString(), telefonRegex)) {
+        QMessageBox::warning(this, "Błąd", "Numer telefonu musi zawierać dokładnie 9 cyfr.");
+        return;
+    }
 
-    wynikowyKlient = Client(name, surname);
+    if (!std::regex_match(email.toStdString(), emailRegex)) {
+        QMessageBox::warning(this, "Błąd", "Nieprawidłowy adres email.");
+        return;
+    }
+    wynikowyKlient = Client(name, surname, email, tel);
     danePoprawne = true;
     accept();
 }

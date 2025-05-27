@@ -3,7 +3,9 @@
 #include <QTextStream>
 #include <QDebug>
 #include <filesystem>
-
+#include "osobowy.h"
+#include "ciezarowy.h"
+#include "motocykl.h"
 
 Salon::Salon(QObject *parent)
     : QObject(parent){}
@@ -28,7 +30,7 @@ void Salon::zapiszKlientow(const std::string& sciezkaPliku) const{
     qDebug() << "Zapisuję klientów do pliku:" << QString::fromStdString(path.string());
     QTextStream out(&file);
     for (const Client& c : klienci) {
-        out << c.getName() << ";" << c.getSurname() << ";" << c.getId() << "\n";
+        out << c.getName() << ";" << c.getSurname() << ";" << c.getId() << ";" << c.getEmail() << ";" << c.getTel() <<"\n";
     }
 }
 
@@ -41,6 +43,7 @@ void Salon::wczytajKlientow(const std::string& sciezkaPliku) {
         qWarning() << "Plik nie istnieje:" << QString::fromStdString(path.string());
         return;
     }
+
     QFile file(QString::fromStdString(path.string()));
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Nie można otworzyć pliku do odczytu:" << QString::fromStdString(path.string());
@@ -51,13 +54,15 @@ void Salon::wczytajKlientow(const std::string& sciezkaPliku) {
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
         QStringList parts = line.split(';');
-        if (parts.size() == 3) {
-            klienci.emplace_back(parts[0], parts[1], parts[2]);
+        if (parts.size() == 5) {
+            klienci.emplace_back(parts[0], parts[1], parts[2], parts[3], parts[4]);
+        } else {
+            qWarning() << "Błędna liczba pól w linii:" << line;
         }
     }
+
     qDebug() << "Liczba klientów:" << klienci.size();
     emit klienciWczytani();
-    qDebug() << "Sygnal:";
 }
 
 bool Salon::usunKlientaPoId(int id)
@@ -73,4 +78,52 @@ bool Salon::usunKlientaPoId(int id)
     }
 
     return false;
+}
+
+std::vector<std::shared_ptr<Pojazd>>& Salon::getPojazdy() {
+    return pojazdy;
+}
+void Salon::wczytajPojazdy(const std::string& sciezkaPliku) {
+    pojazdy.clear();
+
+    std::filesystem::path path = sciezkaPliku;
+    if (!std::filesystem::exists(path)) {
+        qWarning() << "Plik nie istnieje:" << QString::fromStdString(path.string());
+        return;
+    }
+
+    QFile file(QString::fromStdString(path.string()));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Nie można otworzyć pliku do odczytu:" << QString::fromStdString(path.string());
+        return;
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        QStringList parts = line.split(';');
+
+        if (parts.isEmpty()) continue;
+
+        QString typ = parts[0];
+        std::shared_ptr<Pojazd> pojazd;
+
+        if (typ == "Osobowy") {
+            pojazd = std::make_shared<Osobowy>();
+        } else if (typ == "Ciezarowy") {
+            pojazd = std::make_shared<Ciezarowy>();
+        } else if (typ == "Motocykl") {
+            pojazd = std::make_shared<Motocykl>();
+        } else {
+            qWarning() << "Nieznany typ pojazdu:" << typ;
+            continue;
+        }
+
+        // przekształć części do jednego strumienia
+        QStringList danePojazdu = parts.mid(1);
+        pojazd->wczytaj(danePojazdu);
+        pojazdy.push_back(pojazd);
+    }
+
+    qDebug() << "Wczytano pojazdów:" << pojazdy.size();
 }
