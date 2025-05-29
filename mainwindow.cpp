@@ -116,7 +116,7 @@ void MainWindow::on_btnWyszukaj_clicked()
 
     std::regex regex("^" + wzorzec.toStdString(), std::regex_constants::icase);
 
-    auto& klienci = salon->getKlienci(); // salon to Salon*
+    auto& klienci = salon->getKlienci();
     auto pasujacy = klienci | std::views::filter([&](const Client& k) {
                         if (tryb == "ID")       return std::regex_search(k.getId().toStdString(), regex);
                         if (tryb == "Imie")     return std::regex_search(k.getName().toStdString(), regex);
@@ -180,6 +180,52 @@ void MainWindow::odswiezListePojazdow()
     ui->listWidgetPojazdy->clear();
     for (const auto& pojazd : salon->getPojazdy()) {
        ui->listWidgetPojazdy->addItem(pojazd->getTyp() + ": " + pojazd->getOpis());
+    }
+}
+void MainWindow::on_btnDodajPojazd_clicked()
+{
+    QStringList typy = {"Osobowy", "Motocykl", "Ciezarowy"};
+    bool ok;
+    QString wybor = QInputDialog::getItem(this, "Wybierz typ pojazdu", "Typ:", typy, 0, false, &ok);
+
+    if (!ok || wybor.isEmpty()) return;
+
+    std::unique_ptr<DodajPojazdDialog> dialog;
+
+    if (wybor == "Osobowy")
+        dialog = std::make_unique<DodajOsobowyDialog>(salon, this);
+    else if (wybor == "Motocykl")
+        dialog = std::make_unique<DodajMotocyklDialog>(salon, this);
+    else if (wybor == "Ciezarowy")
+        dialog = std::make_unique<DodajCiezarowyDialog>(salon, this);
+
+    if (dialog && dialog->exec() == QDialog::Accepted) {
+        salon->dodajPojazd(dialog->getPojazd());
+        QMessageBox::information(this, "Sukces", "Dodano pojazd.");
+        odswiezListePojazdow();
+    }
+}
+void MainWindow::on_btnUsunPojazd_clicked()
+{
+    QStringList listaVIN;
+    for (const auto& p : salon->getPojazdy()) {
+        listaVIN << p->getVIN() + " (" + p->getMarka() + " " + p->getModel() + ")";
+    }
+
+    bool ok;
+    QString wybor = QInputDialog::getItem(this, "Usuń pojazd", "Wybierz pojazd:", listaVIN, 0, false, &ok);
+
+    if (!ok || wybor.isEmpty())
+        return;
+
+    // Wyciągamy VIN z tekstu "VIN123456789 (Marka Model)"
+    QString vin = wybor.section(' ', 0, 0);
+
+    if (salon->usunPojazdPoVIN(vin)) {
+        QMessageBox::information(this, "Sukces", "Pojazd został usunięty.");
+        odswiezListePojazdow();
+    } else {
+        QMessageBox::warning(this, "Błąd", "Nie znaleziono pojazdu o podanym VIN.");
     }
 }
 

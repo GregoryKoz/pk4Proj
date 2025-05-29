@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     int result = a.exec();
 
     salon->zapiszKlientow("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/klienci.txt");
+    salon->zapiszPojazdyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/pojazdy.txt");
     delete salon;
 
     return result;

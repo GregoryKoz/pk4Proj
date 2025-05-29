@@ -6,6 +6,10 @@
 #include "klient.h"
 #include "Salon.h"
 #include <regex>
+#include "dodajosobowydialog.h"
+#include "dodajmotocykldialog.h"
+#include "dodajciezarowydialog.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -31,6 +35,8 @@ private slots:
     void on_btnStronaRaport_clicked();
     void on_btnStronaSprzedaz_clicked();
     void on_btnStronaSerwis_clicked();
+    void on_btnDodajPojazd_clicked();
+    void on_btnUsunPojazd_clicked();
 private:
     Ui::MainWindow *ui;
     Salon* salon;

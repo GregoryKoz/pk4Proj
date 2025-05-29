@@ -127,3 +127,43 @@ void Salon::wczytajPojazdy(const std::string& sciezkaPliku) {
 
     qDebug() << "Wczytano pojazdów:" << pojazdy.size();
 }
+void Salon::zapiszPojazdyDoPliku(const std::string& sciezkaPliku) {
+    QFile file(QString::fromStdString(sciezkaPliku));
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Nie można otworzyć pliku do zapisu:" << QString::fromStdString(sciezkaPliku);
+        return;
+    }
+
+    QTextStream out(&file);
+    for (const auto& pojazd : pojazdy) {
+        out << pojazd->zapisz() << "\n";
+    }
+
+    file.close();
+    qDebug() << "Zapisano pojazdy do pliku:" << QString::fromStdString(sciezkaPliku);
+}
+void Salon::dodajPojazd(const std::shared_ptr<Pojazd>& pojazd) {
+    pojazdy.push_back(pojazd);
+}
+bool Salon::vinIstnieje(const QString& vin) const {
+    return std::any_of(pojazdy.begin(), pojazdy.end(), [&](const auto& p) {
+        return p->getVIN() == vin;
+    });
+}
+QString Salon::wygenerujUnikalnyVIN() {
+    QString vin;
+    do {
+        vin = QUuid::createUuid().toString(QUuid::WithoutBraces).remove('-').left(17).toUpper();
+    } while (vinIstnieje(vin));
+    return vin;
+}
+bool Salon::usunPojazdPoVIN(const QString& vin) {
+    auto it = std::find_if(pojazdy.begin(), pojazdy.end(), [&](const auto& p) {
+        return p->getVIN() == vin;
+    });
+    if (it != pojazdy.end()) {
+        pojazdy.erase(it);
+        return true;
+    }
+    return false;
+}

@@ -16,7 +16,7 @@
 #include "ciezarowy.h"
 #include "motocykl.h"
 #include <QTextStream>
-
+#include <QUuid>
 
 class Salon : public QObject
 {
@@ -32,9 +32,15 @@ public:
     //pojazdy
     void wczytajPojazdy(const std::string& sciezkaPliku);
     std::vector<std::shared_ptr<Pojazd>>& getPojazdy();
+    void zapiszPojazdyDoPliku(const std::string& sciezkaPliku);
+    void dodajPojazd(const std::shared_ptr<Pojazd>& pojazd);
+    bool vinIstnieje(const QString& vin) const;
+    QString wygenerujUnikalnyVIN();
+    bool usunPojazdPoVIN(const QString& vin);
 private:
     std::vector<Client> klienci;
     std::vector<std::shared_ptr<Pojazd>> pojazdy;
+
 
 signals:
     void klienciWczytani();

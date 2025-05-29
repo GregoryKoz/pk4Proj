@@ -5,6 +5,7 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_AUTOMOC ON)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
 
 qt_standard_project_setup()
@@ -26,6 +27,17 @@ qt_add_executable(Salon-projekt
     ciezarowy.h ciezarowy.cpp
     dodajklientadialog.h dodajklientadialog.cpp dodajklientadialog.ui
     resources.qrc
+    dodajpojazddialog.h
+    dodajosobowydialog.h dodajosobowydialog.cpp dodajosobowydialog.ui
+    dodajciezarowydialog.h dodajciezarowydialog.cpp dodajciezarowydialog.ui
+    dodajmotocykldialog.h dodajmotocykldialog.cpp dodajmotocykldialog.ui
+
+
+
+
+
+
+
 )
 
 target_link_libraries(Salon-projekt
