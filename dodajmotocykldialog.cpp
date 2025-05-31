@@ -34,3 +34,12 @@ void DodajMotocyklDialog::onButtonOkClicked() {
 std::shared_ptr<Pojazd> DodajMotocyklDialog::getPojazd() const {
     return pojazd;
 }
+void DodajMotocyklDialog::uzupelnijDanymi(std::shared_ptr<Motocykl> m)
+{
+    ui->markaLineEdit->setText(m->getMarka());
+    ui->modelLineEdit->setText(m->getModel());
+    ui->cenaLineEdit->setText(QString::number(m->getCena()));
+    ui->rokLineEdit->setText(QString::number(m->getRok()));
+    ui->przebiegLineEdit->setText(QString::number(m->getPrzebieg()));
+    ui->mocLineEdit->setText(QString::number(m->getMoc()));
+}

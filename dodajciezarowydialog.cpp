@@ -36,3 +36,12 @@ void DodajCiezarowyDialog::onButtonOkClicked() {
 std::shared_ptr<Pojazd> DodajCiezarowyDialog::getPojazd() const {
     return pojazd;
 }
+void DodajCiezarowyDialog::uzupelnijDanymi(std::shared_ptr<Ciezarowy> c)
+{
+    ui->markaLineEdit->setText(c->getMarka());
+    ui->modelLineEdit->setText(c->getModel());
+    ui->cenaLineEdit->setText(QString::number(c->getCena()));
+    ui->rokLineEdit->setText(QString::number(c->getRok()));
+    ui->przebiegLineEdit->setText(QString::number(c->getPrzebieg()));
+    ui->ladownoscLineEdit->setText(QString::number(c->getLadownosc()));
+}

@@ -15,7 +15,7 @@ class DodajMotocyklDialog : public DodajPojazdDialog {
 public:
     explicit DodajMotocyklDialog(Salon* salon, QWidget *parent = nullptr);
     ~DodajMotocyklDialog();
-
+    void uzupelnijDanymi(std::shared_ptr<Motocykl> m);
     std::shared_ptr<Pojazd> getPojazd() const override;
 
 private slots:

@@ -17,6 +17,7 @@
 #include "motocykl.h"
 #include <QTextStream>
 #include <QUuid>
+#include "sprzedaz.h"
 
 class Salon : public QObject
 {
@@ -24,8 +25,8 @@ class Salon : public QObject
 public:
     explicit Salon(QObject *parent = nullptr);
     //klienci
-    void dodajKlienta(const Client& klient);
-    std::vector<Client>& getKlienci();
+    void dodajKlienta(const std::shared_ptr<Client>& klient);
+    std::vector<std::shared_ptr<Client>>& getKlienci();
     void zapiszKlientow(const std::string& sciezkaPliku) const;
     void wczytajKlientow(const std::string& sciezkaPliku);
     bool usunKlientaPoId(int id);
@@ -37,10 +38,15 @@ public:
     bool vinIstnieje(const QString& vin) const;
     QString wygenerujUnikalnyVIN();
     bool usunPojazdPoVIN(const QString& vin);
+    std::shared_ptr<Pojazd> znajdzPojazdPoVIN(const QString& vin);
+    void zamienPojazd(const QString& vin, std::shared_ptr<Pojazd> nowy);
+    //sprzedaz
+    void sprzedajPojazd(std::shared_ptr<Pojazd> pojazd, std::shared_ptr<Client> klient, double cena);
+    const std::vector<Sprzedaz>& getSprzedaze() const;
 private:
-    std::vector<Client> klienci;
+    std::vector<std::shared_ptr<Client>> klienci;
     std::vector<std::shared_ptr<Pojazd>> pojazdy;
-
+    std::vector<Sprzedaz> sprzedane;
 
 signals:
     void klienciWczytani();

@@ -22,6 +22,7 @@ public:
     ~MainWindow();
     void odswiezListeKlientow();
     void odswiezListePojazdow();
+    void wypelnijTabeleSprzedazy();
 
 private slots:
 
@@ -37,6 +38,10 @@ private slots:
     void on_btnStronaSerwis_clicked();
     void on_btnDodajPojazd_clicked();
     void on_btnUsunPojazd_clicked();
+    void on_btnEdytujPojazd_clicked();
+    void on_btnWyszukajPojazd_clicked();
+    void on_btnSprzedaj_clicked();
+
 private:
     Ui::MainWindow *ui;
     Salon* salon;

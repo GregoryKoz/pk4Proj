@@ -34,3 +34,12 @@ void DodajOsobowyDialog::onButtonOkClicked() {
 std::shared_ptr<Pojazd> DodajOsobowyDialog::getPojazd() const {
     return pojazd;
 }
+void DodajOsobowyDialog::uzupelnijDanymi(std::shared_ptr<Osobowy> o)
+{
+    ui->markaLineEdit->setText(o->getMarka());
+    ui->modelLineEdit->setText(o->getModel());
+    ui->cenaLineEdit->setText(QString::number(o->getCena()));
+    ui->rokLineEdit->setText(QString::number(o->getRok()));
+    ui->przebiegLineEdit->setText(QString::number(o->getPrzebieg()));
+    ui->miejscaLineEdit->setText(QString::number(o->getliczbaMiejsc()));
+}

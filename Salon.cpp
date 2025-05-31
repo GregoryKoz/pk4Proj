@@ -10,12 +10,10 @@
 Salon::Salon(QObject *parent)
     : QObject(parent){}
 
-void Salon::dodajKlienta(const Client &klient){
+void Salon::dodajKlienta(const std::shared_ptr<Client>& klient) {
     klienci.push_back(klient);
-    emit klienciWczytani();
 }
-
-std::vector<Client>& Salon::getKlienci() {
+std::vector<std::shared_ptr<Client>>& Salon::getKlienci() {
     return klienci;
 }
 
@@ -29,8 +27,8 @@ void Salon::zapiszKlientow(const std::string& sciezkaPliku) const{
     qDebug() << "Liczba klientów:" << klienci.size();
     qDebug() << "Zapisuję klientów do pliku:" << QString::fromStdString(path.string());
     QTextStream out(&file);
-    for (const Client& c : klienci) {
-        out << c.getName() << ";" << c.getSurname() << ";" << c.getId() << ";" << c.getEmail() << ";" << c.getTel() <<"\n";
+    for (const auto& c : klienci) {
+        out << c->getName() << ";" << c->getSurname() << ";" << c->getId() << ";" << c->getEmail() << ";" << c->getTel() <<"\n";
     }
 }
 
@@ -55,7 +53,7 @@ void Salon::wczytajKlientow(const std::string& sciezkaPliku) {
         QString line = in.readLine().trimmed();
         QStringList parts = line.split(';');
         if (parts.size() == 5) {
-            klienci.emplace_back(parts[0], parts[1], parts[2], parts[3], parts[4]);
+            klienci.emplace_back(std::make_shared<Client>(parts[0], parts[1], parts[2], parts[3], parts[4]));
         } else {
             qWarning() << "Błędna liczba pól w linii:" << line;
         }
@@ -68,8 +66,8 @@ void Salon::wczytajKlientow(const std::string& sciezkaPliku) {
 bool Salon::usunKlientaPoId(int id)
 {
     auto it = std::find_if(klienci.begin(), klienci.end(),
-                           [id](const Client& c) {
-                               return c.getId() == QString::number(id);
+                           [id](const std::shared_ptr<Client>& c) {
+                               return c->getId() == QString::number(id);
                            });
 
     if (it != klienci.end()) {
@@ -166,4 +164,27 @@ bool Salon::usunPojazdPoVIN(const QString& vin) {
         return true;
     }
     return false;
+}
+std::shared_ptr<Pojazd> Salon::znajdzPojazdPoVIN(const QString& vin) {
+    auto it = std::find_if(pojazdy.begin(), pojazdy.end(), [&](auto& p) {
+        return p->getVIN() == vin;
+    });
+    return (it != pojazdy.end()) ? *it : nullptr;
+}
+
+void Salon::zamienPojazd(const QString& vin, std::shared_ptr<Pojazd> nowy) {
+    auto it = std::find_if(pojazdy.begin(), pojazdy.end(), [&](auto& p) {
+        return p->getVIN() == vin;
+    });
+    if (it != pojazdy.end()) {
+        *it = nowy;
+    }
+}
+void Salon::sprzedajPojazd(std::shared_ptr<Pojazd> pojazd, std::shared_ptr<Client> klient, double cena) {
+    sprzedane.emplace_back(klient, pojazd, cena);
+    pojazdy.erase(std::remove(pojazdy.begin(), pojazdy.end(), pojazd), pojazdy.end());
+}
+
+const std::vector<Sprzedaz>& Salon::getSprzedaze() const {
+    return sprzedane;
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>804</width>
-    <height>616</height>
+    <width>806</width>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,7 +24,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pageIntro">
        <property name="autoFillBackground">
@@ -52,9 +52,9 @@
        <widget class="QLabel" name="label_2">
         <property name="geometry">
          <rect>
-          <x>280</x>
+          <x>240</x>
           <y>60</y>
-          <width>181</width>
+          <width>271</width>
           <height>161</height>
          </rect>
         </property>
@@ -62,7 +62,7 @@
          <bool>false</bool>
         </property>
         <property name="text">
-         <string>Wybierz jedną z opcji:</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:14pt; font-weight:700;&quot;&gt;Wybierz jedną z opcji:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
        </widget>
        <widget class="QPushButton" name="btnStronaKlient">
@@ -180,7 +180,7 @@
        </layout>
       </widget>
       <widget class="QWidget" name="pagePojazdy">
-       <widget class="QPushButton" name="pushButton_4">
+       <widget class="QPushButton" name="btnWyszukajPojazd">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -197,9 +197,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>20</y>
           <width>781</width>
-          <height>211</height>
+          <height>191</height>
          </rect>
         </property>
        </widget>
@@ -207,9 +207,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>210</y>
+          <y>241</y>
           <width>781</width>
-          <height>192</height>
+          <height>161</height>
          </rect>
         </property>
        </widget>
@@ -239,7 +239,7 @@
          <string>Usuń pojazd</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="btnEdytujPojazd">
         <property name="geometry">
          <rect>
           <x>1</x>
@@ -252,8 +252,58 @@
          <string>Edytuj pojazd</string>
         </property>
        </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>220</y>
+          <width>171</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Wyszukiwarka pojazdów:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>191</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Lista dostępnych pojazdów:</string>
+        </property>
+       </widget>
       </widget>
-      <widget class="QWidget" name="pageSprzedaz"/>
+      <widget class="QWidget" name="pageSprzedaz">
+       <widget class="QPushButton" name="btnSprzedaj">
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>470</y>
+          <width>171</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Dokonaj sprzedaży</string>
+        </property>
+       </widget>
+       <widget class="QTableWidget" name="tableWidgetSprzedaz">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>20</y>
+          <width>691</width>
+          <height>391</height>
+         </rect>
+        </property>
+       </widget>
+      </widget>
       <widget class="QWidget" name="pageRaporty"/>
       <widget class="QWidget" name="pageSerwis"/>
      </widget>
@@ -265,7 +315,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>804</width>
+     <width>806</width>
      <height>26</height>
     </rect>
    </property>

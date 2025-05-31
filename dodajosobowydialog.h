@@ -16,6 +16,7 @@ public:
     explicit DodajOsobowyDialog(Salon* salon, QWidget *parent = nullptr);
     ~DodajOsobowyDialog();
     std::shared_ptr<Pojazd> getPojazd() const override;
+    void uzupelnijDanymi(std::shared_ptr<Osobowy> o);
 
 private slots:
     void onButtonOkClicked();

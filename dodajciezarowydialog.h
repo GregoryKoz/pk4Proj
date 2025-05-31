@@ -15,6 +15,7 @@ class DodajCiezarowyDialog : public DodajPojazdDialog {
 public:
     explicit DodajCiezarowyDialog(Salon* salon, QWidget *parent = nullptr);
     ~DodajCiezarowyDialog();
+    void uzupelnijDanymi(std::shared_ptr<Ciezarowy> c);
 
     std::shared_ptr<Pojazd> getPojazd() const override;
 
