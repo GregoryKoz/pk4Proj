@@ -3,6 +3,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <filesystem>
+#include <QDate>
 #include "osobowy.h"
 #include "ciezarowy.h"
 #include "motocykl.h"
@@ -181,10 +182,148 @@ void Salon::zamienPojazd(const QString& vin, std::shared_ptr<Pojazd> nowy) {
     }
 }
 void Salon::sprzedajPojazd(std::shared_ptr<Pojazd> pojazd, std::shared_ptr<Client> klient, double cena) {
-    sprzedane.emplace_back(klient, pojazd, cena);
+    if (!pojazd || !klient)
+        return;
+
+    QString vin = pojazd->getVIN();
+    QString typ = pojazd->getTyp();
+    QString marka = pojazd->getMarka();
+    QString model = pojazd->getModel();
+    int rok = pojazd->getRok();
+    int przebieg = pojazd->getPrzebieg();
+
+    QString cecha;
+
+    if (typ == "Motocykl") {
+        auto m = std::dynamic_pointer_cast<Motocykl>(pojazd);
+        cecha = QString::number(m ? m->getMoc() : 0) + " KM";
+    } else if (typ == "Osobowy") {
+        auto o = std::dynamic_pointer_cast<Osobowy>(pojazd);
+        cecha = QString::number(o ? o->getliczbaMiejsc() : 0) + " miejsc";
+    } else if (typ == "Ciezarowy") {
+        auto c = std::dynamic_pointer_cast<Ciezarowy>(pojazd);
+        cecha = QString::number(c ? c->getLadownosc() : 0.0) + " kg";
+    } else {
+        cecha = "brak";
+    }
+
+    QString imie = klient->getName();
+    QString nazwisko = klient->getSurname();
+    QString id = klient->getId();
+    QString data = QDate::currentDate().toString("yyyy-MM-dd");
+
+    Sprzedaz s(vin, typ, marka, model, rok, przebieg, cecha, imie, nazwisko, id, cena, data);
+    sprzedane.push_back(s);
+
     pojazdy.erase(std::remove(pojazdy.begin(), pojazdy.end(), pojazd), pojazdy.end());
+
 }
 
 const std::vector<Sprzedaz>& Salon::getSprzedaze() const {
     return sprzedane;
+}
+void Salon::zapiszSprzedazDoPliku(const std::string& sciezkaPliku) const {
+    std::filesystem::path path = sciezkaPliku;
+
+    QFile file(QString::fromStdString(path.string()));
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Nie można otworzyć pliku do zapisu:" << QString::fromStdString(path.string());
+        return;
+    }
+
+    QTextStream out(&file);
+    for (const auto& s : sprzedane) {
+        s.zapisz(out);
+    }
+
+
+}
+void Salon::wczytajSprzedazZPliku(const std::string& sciezkaPliku) {
+    sprzedane.clear();
+    QFile file(QString::fromStdString(sciezkaPliku));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Nie można otworzyć pliku sprzedaży do odczytu.";
+        return;
+    }
+
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        QStringList dane = line.split(';');
+        Sprzedaz s;
+        if (s.wczytaj(dane)) {
+            sprzedane.push_back(s);
+        } else {
+            qWarning() << "Błąd w linii sprzedaży:" << line;
+        }
+    }
+}
+void Salon::dodajSerwis(const Serwis& s) {
+    serwisy.push_back(s);
+}
+
+bool Salon::zakonczSerwisPoVIN(const QString& vin) {
+    for (auto& s : serwisy) {
+        if (s.getVIN() == vin && !s.czyZakonczone()) {
+            s.oznaczJakoZakonczone();
+            return true;
+        }
+    }
+    return false;
+}
+
+const std::vector<Serwis>& Salon::getSerwisy() const {
+    return serwisy;
+}
+
+void Salon::zapiszSerwisyDoPliku(const std::string& sciezka) const {
+    QFile file(QString::fromStdString(sciezka));
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Nie można zapisać serwisów do pliku:" << QString::fromStdString(sciezka);
+        return;
+    }
+
+    QTextStream out(&file);
+    for (const auto& s : serwisy) {
+        out << s.zapisz() << "\n";
+    }
+}
+
+void Salon::wczytajSerwisyZPliku(const std::string& sciezka) {
+    std::filesystem::path path = sciezka;
+
+    if (!std::filesystem::exists(path)) {
+        qWarning() << "Plik serwisów nie istnieje:" << QString::fromStdString(path.string());
+        return;
+    }
+
+    QFile file(QString::fromStdString(path.string()));
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Nie można otworzyć pliku serwisów do odczytu:" << QString::fromStdString(path.string());
+        return;
+    }
+
+    QTextStream in(&file);
+    serwisy.clear();
+
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
+        if (line.isEmpty()) continue;
+
+        QStringList pola = line.split(';');
+        Serwis s;
+        if (s.wczytaj(pola)) {
+            serwisy.push_back(s);
+        } else {
+            qWarning() << "Nieprawidłowe zgłoszenie serwisowe:" << line;
+        }
+    }
+}
+void Salon::usunSprzedazPoVIN(const QString& vin){
+    auto it = std::remove_if(sprzedane.begin(),sprzedane.end(),[&](const Sprzedaz& s){return s.getVIN()== vin;})
+        if (it != sprzedane.end()){
+        sprzedane.erase(it,sprzedane.end());
+        return true;
+    }
+    return false;
 }

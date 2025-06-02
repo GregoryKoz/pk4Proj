@@ -23,6 +23,7 @@ public:
     void odswiezListeKlientow();
     void odswiezListePojazdow();
     void wypelnijTabeleSprzedazy();
+    void wypelnijTabeleSerwisow();
 
 private slots:
 
@@ -41,6 +42,8 @@ private slots:
     void on_btnEdytujPojazd_clicked();
     void on_btnWyszukajPojazd_clicked();
     void on_btnSprzedaj_clicked();
+    void on_btnZglos_clicked();
+    void on_btnWykonaj_clicked();
 
 private:
     Ui::MainWindow *ui;

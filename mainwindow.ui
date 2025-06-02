@@ -24,7 +24,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="pageIntro">
        <property name="autoFillBackground">
@@ -305,7 +305,27 @@
        </widget>
       </widget>
       <widget class="QWidget" name="pageRaporty"/>
-      <widget class="QWidget" name="pageSerwis"/>
+      <widget class="QWidget" name="pageSerwis">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QTableWidget" name="tableWidgetSerwisy"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnZglos">
+          <property name="text">
+           <string>Zgłoś serwis</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnWykonaj">
+          <property name="text">
+           <string>Wykonaj serwis</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>

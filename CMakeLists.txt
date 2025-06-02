@@ -32,6 +32,7 @@ qt_add_executable(Salon-projekt
     dodajciezarowydialog.h dodajciezarowydialog.cpp dodajciezarowydialog.ui
     dodajmotocykldialog.h dodajmotocykldialog.cpp dodajmotocykldialog.ui
     sprzedaz.h sprzedaz.cpp
+    serwis.h serwis.cpp
 
 
 

@@ -18,6 +18,7 @@
 #include <QTextStream>
 #include <QUuid>
 #include "sprzedaz.h"
+#include "serwis.h"  // upewnij się, że masz #include na górze pliku
 
 class Salon : public QObject
 {
@@ -43,10 +44,19 @@ public:
     //sprzedaz
     void sprzedajPojazd(std::shared_ptr<Pojazd> pojazd, std::shared_ptr<Client> klient, double cena);
     const std::vector<Sprzedaz>& getSprzedaze() const;
+    void zapiszSprzedazDoPliku(const std::string& sciezkaPliku) const;
+    void wczytajSprzedazZPliku(const std::string& sciezkaPliku);
+    //serwis
+    void dodajSerwis(const Serwis& s);
+    bool zakonczSerwisPoVIN(const QString& vin);
+    void zapiszSerwisyDoPliku(const std::string& sciezka) const;
+    void wczytajSerwisyZPliku(const std::string& sciezka);
+    const std::vector<Serwis>& getSerwisy() const;
 private:
     std::vector<std::shared_ptr<Client>> klienci;
     std::vector<std::shared_ptr<Pojazd>> pojazdy;
     std::vector<Sprzedaz> sprzedane;
+    std::vector<Serwis> serwisy;
 
 signals:
     void klienciWczytani();

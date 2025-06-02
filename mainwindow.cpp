@@ -14,6 +14,8 @@ MainWindow::MainWindow(Salon* salonPtr, QWidget* parent)
     ui->stackedWidget->setCurrentWidget(ui->pageIntro);
     odswiezListeKlientow();
     odswiezListePojazdow();
+    wypelnijTabeleSprzedazy();
+    wypelnijTabeleSerwisow();
     connect(ui->actionKlienci, &QAction::triggered, this, [this]() {
         ui->stackedWidget->setCurrentWidget(ui->pageKlienci);
     });
@@ -347,15 +349,12 @@ void MainWindow::wypelnijTabeleSprzedazy() {
 
     int row = 0;
     for (const auto& s : sprzedaze) {
-        const auto& p = s.getPojazd();
-        const auto& k = s.getKlient();
-
-        ui->tableWidgetSprzedaz->setItem(row, 0, new QTableWidgetItem(p->getVIN()));
-        ui->tableWidgetSprzedaz->setItem(row, 1, new QTableWidgetItem(p->getMarka()));
-        ui->tableWidgetSprzedaz->setItem(row, 2, new QTableWidgetItem(p->getModel()));
-        ui->tableWidgetSprzedaz->setItem(row, 3, new QTableWidgetItem(QString::number(s.getCena())));
-        ui->tableWidgetSprzedaz->setItem(row, 4, new QTableWidgetItem(s.getData().toString("yyyy-MM-dd HH:mm")));
-        ui->tableWidgetSprzedaz->setItem(row, 5, new QTableWidgetItem(k->getName() + " " + k->getSurname()));
+        ui->tableWidgetSprzedaz->setItem(row, 0, new QTableWidgetItem(s.getVIN()));
+        ui->tableWidgetSprzedaz->setItem(row, 1, new QTableWidgetItem(s.getMarka()));
+        ui->tableWidgetSprzedaz->setItem(row, 2, new QTableWidgetItem(s.getModel()));
+        ui->tableWidgetSprzedaz->setItem(row, 3, new QTableWidgetItem(QString::number(s.getCenaSprzedazy())));
+        ui->tableWidgetSprzedaz->setItem(row, 4, new QTableWidgetItem(s.getData())); // już QString
+        ui->tableWidgetSprzedaz->setItem(row, 5, new QTableWidgetItem(s.getImieKlienta() + " " + s.getNazwiskoKlienta()));
         ++row;
     }
 
@@ -365,7 +364,7 @@ void MainWindow::wypelnijTabeleSprzedazy() {
 void MainWindow::on_btnSprzedaj_clicked() {
     QStringList vinLista;
     for (const auto& p : salon->getPojazdy()) {
-        vinLista << p->getVIN();
+        vinLista << p->getVIN() + " (" + p->getMarka() + " " + p->getModel() + ")";
     }
 
     if (vinLista.isEmpty()) {
@@ -374,8 +373,10 @@ void MainWindow::on_btnSprzedaj_clicked() {
     }
 
     bool ok;
-    QString wybranyVIN = QInputDialog::getItem(this, "Sprzedaż", "Wybierz VIN pojazdu:", vinLista, 0, false, &ok);
-    if (!ok || wybranyVIN.isEmpty()) return;
+    QString wybranyVINOpis = QInputDialog::getItem(this, "Sprzedaż", "Wybierz VIN pojazdu:", vinLista, 0, false, &ok);
+    if (!ok || wybranyVINOpis.isEmpty()) return;
+
+    QString wybranyVIN = wybranyVINOpis.section(" ", 0, 0); // tylko VIN
 
     auto pojazdIt = std::find_if(salon->getPojazdy().begin(), salon->getPojazdy().end(),
                                  [&](const auto& p) { return p->getVIN() == wybranyVIN; });
@@ -430,4 +431,124 @@ void MainWindow::on_btnSprzedaj_clicked() {
 
     odswiezListePojazdow();
     wypelnijTabeleSprzedazy();
+}
+void MainWindow::wypelnijTabeleSerwisow() {
+    const auto& serwisy = salon->getSerwisy();
+
+    ui->tableWidgetSerwisy->clearContents();
+    ui->tableWidgetSerwisy->setRowCount(static_cast<int>(serwisy.size()));
+    ui->tableWidgetSerwisy->setColumnCount(6);
+    ui->tableWidgetSerwisy->setHorizontalHeaderLabels({"Klient ID", "VIN", "Opis usterki", "Zgłoszono", "Umówiono", "Status"});
+
+    int row = 0;
+    for (const auto& s : serwisy) {
+        ui->tableWidgetSerwisy->setItem(row, 0, new QTableWidgetItem(s.getIdKlienta()));
+        ui->tableWidgetSerwisy->setItem(row, 1, new QTableWidgetItem(s.getVIN()));
+        ui->tableWidgetSerwisy->setItem(row, 2, new QTableWidgetItem(s.getOpis()));
+        ui->tableWidgetSerwisy->setItem(row, 3, new QTableWidgetItem(s.getDataZgloszenia().toString("yyyy-MM-dd")));
+        ui->tableWidgetSerwisy->setItem(row, 4, new QTableWidgetItem(s.getDataUmowiona().toString("yyyy-MM-dd")));
+        ui->tableWidgetSerwisy->setItem(row, 5, new QTableWidgetItem(s.czyZakonczone() ? "Zakończone" : "W toku"));
+        ++row;
+    }
+
+    ui->tableWidgetSerwisy->resizeColumnsToContents();
+}
+void MainWindow::on_btnZglos_clicked() {
+    QStringList vinLista;
+    for (const auto& p : salon->getPojazdy()) {
+        vinLista << p->getVIN() + " (" + p->getMarka() + " " + p->getModel() + ")";
+    }
+
+    if (vinLista.isEmpty()) {
+        QMessageBox::information(this, "Brak pojazdów", "Nie ma dostępnych pojazdów do zgłoszenia serwisowego.");
+        return;
+    }
+
+    bool ok;
+    QString wybranyVINOpis = QInputDialog::getItem(this, "Zgłoszenie serwisowe", "Wybierz VIN pojazdu:", vinLista, 0, false, &ok);
+    if (!ok || wybranyVINOpis.isEmpty()) return;
+
+    QString wybranyVIN = wybranyVINOpis.section(" ", 0, 0); // tylko VIN
+
+    auto pojazdIt = std::find_if(salon->getPojazdy().begin(), salon->getPojazdy().end(),
+                                 [&](const auto& p) { return p->getVIN() == wybranyVIN; });
+
+    if (pojazdIt == salon->getPojazdy().end()) {
+        QMessageBox::warning(this, "Błąd", "Nie znaleziono pojazdu.");
+        return;
+    }
+
+    const auto& klienci = salon->getKlienci();
+    if (klienci.empty()) {
+        QMessageBox::information(this, "Brak klientów", "Brak zarejestrowanych klientów.");
+        return;
+    }
+
+    QStringList klientLista;
+    for (const auto& k : klienci) {
+        klientLista << k->getName() + " " + k->getSurname();
+    }
+
+    QString wybranyKlient = QInputDialog::getItem(this, "Zgłoszenie serwisowe", "Wybierz klienta:", klientLista, 0, false, &ok);
+    if (!ok || wybranyKlient.isEmpty()) return;
+
+    auto klientIt = std::find_if(klienci.begin(), klienci.end(),
+                                 [&](const auto& k) {
+                                     return (k->getName() + " " + k->getSurname()) == wybranyKlient;
+                                 });
+
+    if (klientIt == klienci.end()) {
+        QMessageBox::warning(this, "Błąd", "Nie znaleziono klienta.");
+        return;
+    }
+
+    std::shared_ptr<Client> klient = *klientIt;
+
+    QString opis = QInputDialog::getText(this, "Zgłoszenie serwisowe", "Podaj opis usterki:", QLineEdit::Normal, "", &ok);
+    if (!ok || opis.isEmpty()) return;
+
+    QString dataTekst = QInputDialog::getText(this, "Zgłoszenie serwisowe", "Podaj datę umówienia (rrrr-mm-dd):", QLineEdit::Normal, "", &ok);
+    if (!ok || dataTekst.isEmpty()) return;
+
+    QDate dataUmowiona = QDate::fromString(dataTekst, "yyyy-MM-dd");
+    if (!dataUmowiona.isValid()) {
+        QMessageBox::warning(this, "Błąd", "Nieprawidłowy format daty. Użyj formatu RRRR-MM-DD.");
+        return;
+    }
+
+    salon->dodajSerwis(Serwis(klient->getId(), wybranyVIN, opis, dataUmowiona));
+    salon->zapiszSerwisyDoPliku("serwisy.txt");
+
+    QMessageBox::information(this, "Zgłoszono", "Zgłoszenie serwisowe zostało zapisane.");
+    wypelnijTabeleSerwisow();
+}
+void MainWindow::on_btnWykonaj_clicked() {
+    const auto& serwisy = salon->getSerwisy();
+
+    // Filtrowanie tylko niezakończonych serwisów
+    QStringList aktywneVINy;
+    for (const auto& s : serwisy) {
+        if (!s.czyZakonczone()) {
+            aktywneVINy << s.getVIN() + " (" + s.getIdKlienta() + ")";
+        }
+    }
+
+    if (aktywneVINy.isEmpty()) {
+        QMessageBox::information(this, "Brak zgłoszeń", "Nie ma aktywnych zgłoszeń serwisowych.");
+        return;
+    }
+
+    bool ok;
+    QString wybranyVINOpis = QInputDialog::getItem(this, "Zakończ serwis", "Wybierz VIN pojazdu:", aktywneVINy, 0, false, &ok);
+    if (!ok || wybranyVINOpis.isEmpty()) return;
+
+    QString wybranyVIN = wybranyVINOpis.section(" ", 0, 0); // tylko VIN
+
+    // Próba zakończenia serwisu
+    if (salon->zakonczSerwisPoVIN(wybranyVIN)) {
+        QMessageBox::information(this, "Sukces", "Serwis został oznaczony jako zakończony.");
+        wypelnijTabeleSerwisow();
+    } else {
+        QMessageBox::warning(this, "Błąd", "Nie znaleziono aktywnego zgłoszenia z tym VIN.");
+    }
 }
