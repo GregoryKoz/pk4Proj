@@ -44,6 +44,12 @@ private slots:
     void on_btnSprzedaj_clicked();
     void on_btnZglos_clicked();
     void on_btnWykonaj_clicked();
+    void on_btnUsunSprzedaz_clicked();
+    void on_btnUsunSerwis_clicked();
+    void on_btnSerwisyKlienta_clicked();
+    void on_btnPojazdyKlienta_clicked();
+    void on_btnSuma_clicked();
+    void on_btnSerwisyPojazdu_clicked();
 
 private:
     Ui::MainWindow *ui;

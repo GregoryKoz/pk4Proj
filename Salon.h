@@ -18,7 +18,8 @@
 #include <QTextStream>
 #include <QUuid>
 #include "sprzedaz.h"
-#include "serwis.h"  // upewnij się, że masz #include na górze pliku
+#include "serwis.h"
+#include "ZapisManager.h"
 
 class Salon : public QObject
 {
@@ -46,12 +47,15 @@ public:
     const std::vector<Sprzedaz>& getSprzedaze() const;
     void zapiszSprzedazDoPliku(const std::string& sciezkaPliku) const;
     void wczytajSprzedazZPliku(const std::string& sciezkaPliku);
+    bool usunSprzedazPoVIN(const QString& vin);
     //serwis
     void dodajSerwis(const Serwis& s);
     bool zakonczSerwisPoVIN(const QString& vin);
     void zapiszSerwisyDoPliku(const std::string& sciezka) const;
     void wczytajSerwisyZPliku(const std::string& sciezka);
     const std::vector<Serwis>& getSerwisy() const;
+    bool usunSerwisPoIndeksie(int indeks);
+    ZapisManager zapisManager;
 private:
     std::vector<std::shared_ptr<Client>> klienci;
     std::vector<std::shared_ptr<Pojazd>> pojazdy;

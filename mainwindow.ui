@@ -24,7 +24,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>5</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="pageIntro">
        <property name="autoFillBackground">
@@ -138,6 +138,13 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>Lista Klientów:</string>
+          </property>
+         </widget>
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout">
@@ -280,31 +287,65 @@
        </widget>
       </widget>
       <widget class="QWidget" name="pageSprzedaz">
-       <widget class="QPushButton" name="btnSprzedaj">
-        <property name="geometry">
-         <rect>
-          <x>70</x>
-          <y>470</y>
-          <width>171</width>
-          <height>41</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Dokonaj sprzedaży</string>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidgetSprzedaz">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>20</y>
-          <width>691</width>
-          <height>391</height>
-         </rect>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QTableWidget" name="tableWidgetSprzedaz"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSprzedaj">
+          <property name="text">
+           <string>Dokonaj sprzedaży</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnUsunSprzedaz">
+          <property name="text">
+           <string>Usuń sprzedaż z listy</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
-      <widget class="QWidget" name="pageRaporty"/>
+      <widget class="QWidget" name="pageRaporty">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:11pt; font-weight:700;&quot;&gt;RAPORTY - export danych do plików&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSerwisyPojazdu">
+          <property name="text">
+           <string>Serwisy Pojazdu</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSerwisyKlienta">
+          <property name="text">
+           <string>Serwisy Klienta</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnPojazdyKlienta">
+          <property name="text">
+           <string>Pojazdy Klienta</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnSuma">
+          <property name="text">
+           <string>Podsumowanie sprzedaży</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="pageSerwis">
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -321,6 +362,13 @@
          <widget class="QPushButton" name="btnWykonaj">
           <property name="text">
            <string>Wykonaj serwis</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnUsunSerwis">
+          <property name="text">
+           <string>Usuń serwis z listy</string>
           </property>
          </widget>
         </item>

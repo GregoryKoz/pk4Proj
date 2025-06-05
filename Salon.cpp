@@ -8,6 +8,7 @@
 #include "ciezarowy.h"
 #include "motocykl.h"
 
+
 Salon::Salon(QObject *parent)
     : QObject(parent){}
 
@@ -319,10 +320,17 @@ void Salon::wczytajSerwisyZPliku(const std::string& sciezka) {
         }
     }
 }
-void Salon::usunSprzedazPoVIN(const QString& vin){
-    auto it = std::remove_if(sprzedane.begin(),sprzedane.end(),[&](const Sprzedaz& s){return s.getVIN()== vin;})
+bool Salon::usunSprzedazPoVIN(const QString& vin){
+    auto it = std::remove_if(sprzedane.begin(),sprzedane.end(),[&](const Sprzedaz& s){return s.getVIN()== vin;});
         if (it != sprzedane.end()){
         sprzedane.erase(it,sprzedane.end());
+        return true;
+    }
+    return false;
+}
+bool Salon::usunSerwisPoIndeksie(int indeks) {
+    if (indeks >= 0 && indeks < static_cast<int>(serwisy.size())) {
+        serwisy.erase(serwisy.begin() + indeks);
         return true;
     }
     return false;

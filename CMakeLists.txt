@@ -33,6 +33,8 @@ qt_add_executable(Salon-projekt
     dodajmotocykldialog.h dodajmotocykldialog.cpp dodajmotocykldialog.ui
     sprzedaz.h sprzedaz.cpp
     serwis.h serwis.cpp
+    eksport.h eksport.cpp
+    zapismanager.h zapismanager.cpp
 
 
 

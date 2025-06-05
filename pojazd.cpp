@@ -23,12 +23,12 @@ int Pojazd::getPrzebieg() const{
     return przebieg;
 }
 
-QString Pojazd::opisbazowy() const{
+QString Pojazd::opisbazowy() const {
     return QString("VIN: %1 %2 %3, Cena: %4 zl, Rok: %5, Przebieg: %6 km")
-        .arg(vin)
+    .arg(vin)
         .arg(marka)
         .arg(model)
-        .arg(cena)
+        .arg(QString::number(cena, 'f', 2))
         .arg(rok)
         .arg(przebieg);
 }

@@ -10,10 +10,13 @@ Sprzedaz::Sprzedaz(const QString& vin, const QString& typPojazdu,
     imieKlienta(imieKlienta), nazwiskoKlienta(nazwiskoKlienta), idKlienta(idKlienta),
     cenaSprzedazy(cenaSprzedazy), data(data) {}
 void Sprzedaz::zapisz(QTextStream& out) const {
+    out.setRealNumberNotation(QTextStream::FixedNotation);
+    out.setRealNumberPrecision(2);
+
     out << vin << ";" << typPojazdu << ";" << marka << ";" << model << ";"
         << rokProdukcji << ";" << przebieg << ";" << cechaSpecyficzna << ";"
         << imieKlienta << ";" << nazwiskoKlienta << ";" << idKlienta << ";"
-        << cenaSprzedazy << ";" << data << "\n";
+        << QString::number(cenaSprzedazy, 'f', 2) << ";" << data << "\n";
 }
 
 bool Sprzedaz::wczytaj(const QStringList& dane) {
@@ -47,3 +50,6 @@ QString Sprzedaz::getNazwiskoKlienta() const { return nazwiskoKlienta; }
 QString Sprzedaz::getIdKlienta() const { return idKlienta; }
 double Sprzedaz::getCenaSprzedazy() const { return cenaSprzedazy; }
 QString Sprzedaz::getData() const { return data; }
+QString Sprzedaz::getCechaSpecyficzna() const {
+    return cechaSpecyficzna;
+}

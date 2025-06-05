@@ -7,6 +7,7 @@
 #include <QPixmap>
 #include <QPalette>
 #include <QImage>
+#include "Eksport.h"
 
 MainWindow::MainWindow(Salon* salonPtr, QWidget* parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), salon(salonPtr) {
@@ -56,6 +57,9 @@ void MainWindow::on_btnDodajKlienta_clicked()
         auto nowyPtr = std::make_shared<Client>(std::move(nowy));
         salon->dodajKlienta(nowyPtr);
         QMessageBox::information(this, "Sukces", "Dodano klienta.");
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszKlientow("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/klienci.txt");
+        });
         odswiezListeKlientow();
     }
 }
@@ -100,6 +104,9 @@ void MainWindow::on_btnUsunKlienta_clicked()
     if (salon->usunKlientaPoId(id)) {
         QMessageBox::information(this, "Sukces", "Klient usunięty.");
         odswiezListeKlientow();
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszKlientow("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/klienci.txt");
+        });
     } else {
         QMessageBox::warning(this, "Błąd", "Nie znaleziono klienta o podanym ID.");
     }
@@ -181,6 +188,9 @@ void MainWindow::on_btnEdytujKlienta_clicked() {
 
     odswiezListeKlientow();
     QMessageBox::information(this, "Zaktualizowano", "Dane klienta zostały zaktualizowane.");
+    salon->zapisManager.dodajZadanie([this]() {
+        salon->zapiszKlientow("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/klienci.txt");
+    });
 }
 
 void MainWindow::odswiezListePojazdow()
@@ -212,6 +222,9 @@ void MainWindow::on_btnDodajPojazd_clicked()
     if (dialog && dialog->exec() == QDialog::Accepted) {
         salon->dodajPojazd(dialog->getPojazd());
         QMessageBox::information(this, "Sukces", "Dodano pojazd.");
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszPojazdyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/pojazdy.txt");
+        });
         odswiezListePojazdow();
     }
 }
@@ -234,6 +247,9 @@ void MainWindow::on_btnUsunPojazd_clicked()
     if (salon->usunPojazdPoVIN(vin)) {
         QMessageBox::information(this, "Sukces", "Pojazd został usunięty.");
         odswiezListePojazdow();
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszPojazdyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/pojazdy.txt");
+        });
     } else {
         QMessageBox::warning(this, "Błąd", "Nie znaleziono pojazdu o podanym VIN.");
     }
@@ -285,6 +301,9 @@ void MainWindow::on_btnEdytujPojazd_clicked()
         nowy->setVIN(pojazd->getVIN());
         salon->zamienPojazd(vin, nowy);
         QMessageBox::information(this, "Zaktualizowano", "Dane pojazdu zostały zaktualizowane.");
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszPojazdyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/pojazdy.txt");
+        });
         odswiezListePojazdow();
     }
 }
@@ -352,8 +371,8 @@ void MainWindow::wypelnijTabeleSprzedazy() {
         ui->tableWidgetSprzedaz->setItem(row, 0, new QTableWidgetItem(s.getVIN()));
         ui->tableWidgetSprzedaz->setItem(row, 1, new QTableWidgetItem(s.getMarka()));
         ui->tableWidgetSprzedaz->setItem(row, 2, new QTableWidgetItem(s.getModel()));
-        ui->tableWidgetSprzedaz->setItem(row, 3, new QTableWidgetItem(QString::number(s.getCenaSprzedazy())));
-        ui->tableWidgetSprzedaz->setItem(row, 4, new QTableWidgetItem(s.getData())); // już QString
+        ui->tableWidgetSprzedaz->setItem(row, 3, new QTableWidgetItem(QString::number(s.getCenaSprzedazy(), 'f', 2)));
+        ui->tableWidgetSprzedaz->setItem(row, 4, new QTableWidgetItem(s.getData()));
         ui->tableWidgetSprzedaz->setItem(row, 5, new QTableWidgetItem(s.getImieKlienta() + " " + s.getNazwiskoKlienta()));
         ++row;
     }
@@ -428,7 +447,12 @@ void MainWindow::on_btnSprzedaj_clicked() {
 
     salon->sprzedajPojazd(pojazd, klient, cena);
     QMessageBox::information(this, "Sukces", "Pojazd został sprzedany.");
-
+    salon->zapisManager.dodajZadanie([this]() {
+        salon->zapiszPojazdyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/pojazdy.txt");
+    });
+    salon->zapisManager.dodajZadanie([this]() {
+        salon->zapiszSprzedazDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/sprzedaz.txt");
+    });
     odswiezListePojazdow();
     wypelnijTabeleSprzedazy();
 }
@@ -455,8 +479,15 @@ void MainWindow::wypelnijTabeleSerwisow() {
 }
 void MainWindow::on_btnZglos_clicked() {
     QStringList vinLista;
+
+    // Dodaj dostępne pojazdy
     for (const auto& p : salon->getPojazdy()) {
         vinLista << p->getVIN() + " (" + p->getMarka() + " " + p->getModel() + ")";
+    }
+
+    // Dodaj sprzedane
+    for (const auto& s : salon->getSprzedaze()) {
+        vinLista << s.getVIN() + " (" + s.getMarka() + " " + s.getModel() + ") [SPRZEDANY]";
     }
 
     if (vinLista.isEmpty()) {
@@ -469,11 +500,42 @@ void MainWindow::on_btnZglos_clicked() {
     if (!ok || wybranyVINOpis.isEmpty()) return;
 
     QString wybranyVIN = wybranyVINOpis.section(" ", 0, 0); // tylko VIN
+    std::shared_ptr<Pojazd> pojazd = nullptr;
 
+    // Szukaj w dostępnych
     auto pojazdIt = std::find_if(salon->getPojazdy().begin(), salon->getPojazdy().end(),
                                  [&](const auto& p) { return p->getVIN() == wybranyVIN; });
 
-    if (pojazdIt == salon->getPojazdy().end()) {
+    if (pojazdIt != salon->getPojazdy().end()) {
+        pojazd = *pojazdIt;
+    } else {
+        // Szukaj w sprzedanych
+        const auto& sprzedane = salon->getSprzedaze();
+        auto sIt = std::find_if(sprzedane.begin(), sprzedane.end(),
+                                [&](const Sprzedaz& s) { return s.getVIN() == wybranyVIN; });
+
+        if (sIt != sprzedane.end()) {
+            const auto& s = *sIt;
+            if (s.getTypPojazdu() == "Osobowy") {
+                int miejsca = s.getCechaSpecyficzna().toInt();
+                pojazd = std::make_shared<Osobowy>(
+                    s.getVIN(), s.getMarka(), s.getModel(), s.getCenaSprzedazy(),
+                    s.getRokProdukcji(), s.getPrzebieg(), miejsca);
+            } else if (s.getTypPojazdu() == "Motocykl") {
+                int moc = s.getCechaSpecyficzna().toInt();
+                pojazd = std::make_shared<Motocykl>(
+                    s.getVIN(), s.getMarka(), s.getModel(), s.getCenaSprzedazy(),
+                    s.getRokProdukcji(), s.getPrzebieg(), moc);
+            } else if (s.getTypPojazdu() == "Ciezarowy") {
+                double ladownosc = s.getCechaSpecyficzna().toDouble();
+                pojazd = std::make_shared<Ciezarowy>(
+                    s.getVIN(), s.getMarka(), s.getModel(), s.getCenaSprzedazy(),
+                    s.getRokProdukcji(), s.getPrzebieg(), ladownosc);
+            }
+        }
+    }
+
+    if (!pojazd) {
         QMessageBox::warning(this, "Błąd", "Nie znaleziono pojazdu.");
         return;
     }
@@ -516,16 +578,17 @@ void MainWindow::on_btnZglos_clicked() {
         return;
     }
 
-    salon->dodajSerwis(Serwis(klient->getId(), wybranyVIN, opis, dataUmowiona));
-    salon->zapiszSerwisyDoPliku("serwisy.txt");
-
+    salon->dodajSerwis(Serwis(klient->getId(), pojazd->getVIN(), opis, dataUmowiona));
+    salon->zapisManager.dodajZadanie([this]() {
+        salon->zapiszSerwisyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/serwisy.txt");
+    });
     QMessageBox::information(this, "Zgłoszono", "Zgłoszenie serwisowe zostało zapisane.");
     wypelnijTabeleSerwisow();
 }
 void MainWindow::on_btnWykonaj_clicked() {
     const auto& serwisy = salon->getSerwisy();
 
-    // Filtrowanie tylko niezakończonych serwisów
+
     QStringList aktywneVINy;
     for (const auto& s : serwisy) {
         if (!s.czyZakonczone()) {
@@ -544,11 +607,148 @@ void MainWindow::on_btnWykonaj_clicked() {
 
     QString wybranyVIN = wybranyVINOpis.section(" ", 0, 0); // tylko VIN
 
-    // Próba zakończenia serwisu
+
     if (salon->zakonczSerwisPoVIN(wybranyVIN)) {
         QMessageBox::information(this, "Sukces", "Serwis został oznaczony jako zakończony.");
         wypelnijTabeleSerwisow();
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszSerwisyDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/serwisy.txt");
+        });
+
     } else {
         QMessageBox::warning(this, "Błąd", "Nie znaleziono aktywnego zgłoszenia z tym VIN.");
     }
 }
+void MainWindow::on_btnUsunSprzedaz_clicked(){
+    const auto& sprzedaze = salon->getSprzedaze();
+    if(sprzedaze.empty()){
+        QMessageBox::information(this,"Brak danych", "Nie ma żadnych zapisanych sprzedaży do usunięcia");
+        return;
+    }
+    QStringList listaOpisow;
+    for(const auto& s: sprzedaze){
+        listaOpisow << s.getVIN() + " - " + s.getIdKlienta();
+    }
+    bool ok;
+    QString wybor = QInputDialog::getItem(this, "Usun sprzedaż", "Wybierz sprzedaż do usunięcia:", listaOpisow,0,false,&ok);
+    if (!ok || wybor.isEmpty()) return;
+
+    QString vin = wybor.section(" ", 0, 0); // tylko VIN
+
+    if (salon->usunSprzedazPoVIN(vin)) {
+        QMessageBox::information(this, "Usunięto", "Sprzedaż została usunięta.");
+        wypelnijTabeleSprzedazy();
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszSprzedazDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/sprzedaz.txt");
+        });
+    } else {
+        QMessageBox::warning(this, "Błąd", "Nie udało się znaleźć sprzedaży z podanym VIN.");
+    }
+
+}
+void MainWindow::on_btnUsunSerwis_clicked() {
+    const auto& serwisy = salon->getSerwisy();
+
+    if (serwisy.empty()) {
+        QMessageBox::information(this, "Brak zgłoszeń", "Brak zgłoszeń serwisowych do usunięcia.");
+        return;
+    }
+
+    QStringList listaSerwisow;
+    for (const auto& s : serwisy) {
+        QString opis = s.getVIN() + " | " + s.getDataUmowiona().toString("yyyy-MM-dd") + " | " + s.getOpis();
+        listaSerwisow << opis;
+    }
+
+    bool ok;
+    QString wybor = QInputDialog::getItem(this, "Usuń serwis", "Wybierz zgłoszenie do usunięcia:", listaSerwisow, 0, false, &ok);
+    if (!ok || wybor.isEmpty()) return;
+
+    int index = listaSerwisow.indexOf(wybor);
+    if (index >= 0 && salon->usunSerwisPoIndeksie(index)) {
+        QMessageBox::information(this, "Usunięto", "Zgłoszenie serwisowe zostało usunięte.");
+        wypelnijTabeleSerwisow();
+        salon->zapisManager.dodajZadanie([this]() {
+            salon->zapiszSprzedazDoPliku("C:/Users/Janusz/Desktop/PK4- Laby/pliki do projektu/serwisy.txt");
+        });
+    } else {
+        QMessageBox::warning(this, "Błąd", "Nie udało się usunąć zgłoszenia.");
+    }
+}
+void MainWindow::on_btnSuma_clicked() {
+    Eksport::podsumujSprzedaz(salon->getSprzedaze());
+    QMessageBox::information(this, "Eksport", "Podsumowanie sprzedaży zostało zapisane.");
+}
+void MainWindow::on_btnPojazdyKlienta_clicked() {
+    const auto& klienci = salon->getKlienci();
+    if (klienci.empty()) {
+        QMessageBox::warning(this, "Brak danych", "Brak klientów.");
+        return;
+    }
+
+    QStringList lista;
+    for (const auto& k : klienci) {
+        lista << k->getName() + " " + k->getSurname();
+    }
+
+    bool ok;
+    QString wybrany = QInputDialog::getItem(this, "Eksport", "Wybierz klienta:", lista, 0, false, &ok);
+    if (!ok || wybrany.isEmpty()) return;
+
+    auto it = std::find_if(klienci.begin(), klienci.end(), [&](const auto& k) {
+        return k->getName() + " " + k->getSurname() == wybrany;
+    });
+
+    if (it == klienci.end()) return;
+
+    const auto& klient = *it;
+    Eksport::pojazdyKlienta(salon->getSprzedaze(), klient->getId(), klient->getName(), klient->getSurname());
+    QMessageBox::information(this, "Eksport", "Lista pojazdów została zapisana.");
+}
+void MainWindow::on_btnSerwisyKlienta_clicked() {
+    const auto& klienci = salon->getKlienci();
+    if (klienci.empty()) {
+        QMessageBox::warning(this, "Brak danych", "Brak klientów.");
+        return;
+    }
+
+    QStringList lista;
+    for (const auto& k : klienci) {
+        lista << k->getName() + " " + k->getSurname();
+    }
+
+    bool ok;
+    QString wybrany = QInputDialog::getItem(this, "Eksport", "Wybierz klienta:", lista, 0, false, &ok);
+    if (!ok || wybrany.isEmpty()) return;
+
+    auto it = std::find_if(klienci.begin(), klienci.end(), [&](const auto& k) {
+        return k->getName() + " " + k->getSurname() == wybrany;
+    });
+
+    if (it == klienci.end()) return;
+
+    const auto& klient = *it;
+    Eksport::serwisyKlienta(salon->getSerwisy(), klient->getId(), klient->getName(), klient->getSurname());
+    QMessageBox::information(this, "Eksport", "Lista serwisów klienta została zapisana.");
+}
+void MainWindow::on_btnSerwisyPojazdu_clicked() {
+    const auto& wszystkie = salon->getSerwisy();
+    if (wszystkie.empty()) {
+        QMessageBox::warning(this, "Brak danych", "Brak zgłoszeń serwisowych.");
+        return;
+    }
+
+    QStringList viny;
+    for (const auto& s : wszystkie) {
+        if (!viny.contains(s.getVIN()))
+            viny << s.getVIN();
+    }
+
+    bool ok;
+    QString wybranyVIN = QInputDialog::getItem(this, "Eksport", "Wybierz VIN pojazdu:", viny, 0, false, &ok);
+    if (!ok || wybranyVIN.isEmpty()) return;
+
+    Eksport::serwisyPojazdu(wszystkie, wybranyVIN);
+    QMessageBox::information(this, "Eksport", "Lista serwisów pojazdu została zapisana.");
+}
+
